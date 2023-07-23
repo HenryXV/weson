@@ -1,6 +1,6 @@
 use std::fs::DirEntry;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct DirectoryEntry {
     path: String,
     name: String,

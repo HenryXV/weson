@@ -1,7 +1,7 @@
 use crossterm::execute;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use ratatui::backend::CrosstermBackend;
-use ratatui::widgets::Widget;
+use ratatui::widgets::{StatefulWidget, Widget};
 use ratatui::Terminal;
 use std::error::Error;
 use std::io;
@@ -33,6 +33,18 @@ impl Backend {
         Ok(())
     }
 
+    pub fn render_stateful_widget<W: StatefulWidget>(
+        &mut self,
+        widget: W,
+        state: &mut W::State,
+    ) -> Result<(), Box<dyn Error>> {
+        self.terminal.draw(|frame| {
+            let area = frame.size();
+            frame.render_stateful_widget(widget, area, state);
+        })?;
+
+        Ok(())
+    }
     fn setup_terminal() -> Result<Terminal<CrosstermBackend<Stdout>>, Box<dyn Error>> {
         let mut stdout = io::stdout();
         enable_raw_mode()?;

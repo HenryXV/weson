@@ -1,10 +1,10 @@
 use crate::fs::dir_entry::DirectoryEntry;
 use std::fs;
 
-pub fn read_dir_from(dir_entry: &DirectoryEntry) -> Vec<DirectoryEntry> {
+pub fn from(path: &str) -> Vec<DirectoryEntry> {
     let mut dir_entries: Vec<DirectoryEntry> = Vec::new();
 
-    match fs::read_dir(dir_entry.path()) {
+    match fs::read_dir(path) {
         Ok(entries) => {
             for entry in entries {
                 match entry {

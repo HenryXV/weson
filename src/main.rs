@@ -2,6 +2,7 @@ mod fs;
 mod run;
 mod ui;
 mod utils;
+mod context;
 
 use crate::ui::backend::Backend;
 use std::error::Error;
