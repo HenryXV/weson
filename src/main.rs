@@ -3,6 +3,7 @@ mod run;
 mod ui;
 mod utils;
 mod context;
+mod events;
 
 use crate::ui::backend::Backend;
 use std::error::Error;

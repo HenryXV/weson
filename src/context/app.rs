@@ -1,35 +1,48 @@
 use crate::context::dir_list_state::DirListState;
 use crate::fs::dir_entry::DirectoryEntry;
-use std::collections::HashMap;
 
 #[derive(Hash, PartialEq, Eq)]
 enum FocusedView {
-    Root,
+    Current,
     Expanded,
 }
 
 pub struct App<'a> {
-    dir_list_states: HashMap<FocusedView, DirListState<'a>>,
+    dir_list_state: DirListState<'a>,
+    dir_list_expanded_state: DirListState<'a>,
     focused_view: FocusedView,
+    quit: bool,
 }
 
 impl<'a> App<'a> {
-    pub fn new(root_dirs: &'a Vec<DirectoryEntry>, dirs_expanded: &'a Vec<DirectoryEntry>) -> Self {
-        let mut dir_list_states = HashMap::new();
-
-        dir_list_states.insert(FocusedView::Root, DirListState::new(root_dirs));
-        dir_list_states.insert(FocusedView::Expanded, DirListState::new(dirs_expanded));
-
+    pub fn new(
+        current_dirs: &'a mut Vec<DirectoryEntry>,
+        dirs_expanded: &'a mut Vec<DirectoryEntry>,
+    ) -> Self {
         Self {
-            dir_list_states,
-            focused_view: FocusedView::Root,
+            dir_list_state: DirListState::new(current_dirs),
+            dir_list_expanded_state: DirListState::new(dirs_expanded),
+            focused_view: FocusedView::Current,
+            quit: false,
         }
     }
 
-    pub fn get_focused_view_state(&self) -> Option<&DirListState> {
+    pub fn get_focused_view_state(&mut self) -> &mut DirListState<'a> {
         match self.focused_view {
-            FocusedView::Root => self.dir_list_states.get(&FocusedView::Root),
-            FocusedView::Expanded => self.dir_list_states.get(&FocusedView::Expanded),
+            FocusedView::Current => &mut self.dir_list_state,
+            FocusedView::Expanded => &mut self.dir_list_expanded_state,
         }
+    }
+
+    pub fn get_expanded_view_state(&mut self) -> &mut DirListState<'a> {
+        &mut self.dir_list_expanded_state
+    }
+
+    pub fn quit(&mut self) {
+        self.quit = true
+    }
+
+    pub fn get_quit(&self) -> bool {
+        self.quit
     }
 }

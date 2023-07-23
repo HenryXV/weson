@@ -1,7 +1,10 @@
+use crate::context::app::App;
+use crate::ui::views::layout::DirectoriesLayout;
+use crate::ui::widgets::dir_list::DirList;
+use crate::ui::widgets::dir_list_expanded::DirListExpanded;
 use crossterm::execute;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use ratatui::backend::CrosstermBackend;
-use ratatui::widgets::{StatefulWidget, Widget};
 use ratatui::Terminal;
 use std::error::Error;
 use std::io;
@@ -24,27 +27,40 @@ impl Backend {
         Ok(())
     }
 
-    pub fn render_widget<W: Widget>(&mut self, widget: W) -> Result<(), Box<dyn Error>> {
-        self.terminal.draw(|frame| {
-            let area = frame.size();
-            frame.render_widget(widget, area);
-        })?;
-
-        Ok(())
-    }
-
-    pub fn render_stateful_widget<W: StatefulWidget>(
+    pub fn render_ui(
         &mut self,
-        widget: W,
-        state: &mut W::State,
+        app: &mut App,
+        layout: DirectoriesLayout,
+        dir_list: DirList,
+        dir_list_expanded: DirListExpanded,
     ) -> Result<(), Box<dyn Error>> {
         self.terminal.draw(|frame| {
             let area = frame.size();
-            frame.render_stateful_widget(widget, area, state);
+
+            frame.render_widget(layout, area);
+
+            let chunks = DirectoriesLayout::default_layout(area);
+            let inner_chunk_middle = DirectoriesLayout::get_inner_chunk(chunks[1]);
+            let inner_chunk_right = DirectoriesLayout::get_inner_chunk(chunks[2]);
+
+            let dir_list_state = app.get_focused_view_state();
+
+            frame.render_stateful_widget(
+                dir_list,
+                inner_chunk_middle[0],
+                dir_list_state.state_mut(),
+            );
+
+            frame.render_stateful_widget(
+                dir_list_expanded,
+                inner_chunk_right[0],
+                app.get_expanded_view_state().state_mut(),
+            );
         })?;
 
         Ok(())
     }
+
     fn setup_terminal() -> Result<Terminal<CrosstermBackend<Stdout>>, Box<dyn Error>> {
         let mut stdout = io::stdout();
         enable_raw_mode()?;

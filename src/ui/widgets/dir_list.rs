@@ -4,17 +4,31 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style;
 use ratatui::style::{Color, Style};
-use ratatui::widgets::{List, ListItem, Widget};
+use ratatui::widgets::{List, ListItem, ListState, StatefulWidget};
 
 #[derive(Default, Clone)]
 pub struct DirList {
     dir_entries: Vec<DirectoryEntry>,
 }
 
-impl Widget for DirList {
-    fn render(self, area: Rect, buf: &mut Buffer) {
+impl StatefulWidget for DirList {
+    type State = ListState;
+
+    fn render(self, area: Rect, buf: &mut Buffer, state: &mut ListState) {
+        if self.dir_entries.is_empty() {
+            buf.set_string(
+                area.x,
+                area.y,
+                "EMPTY",
+                Style::default()
+                    .fg(Color::White)
+                    .bg(Color::Rgb(255, 0, 0))
+                    .add_modifier(style::Modifier::BOLD),
+            );
+        }
+
         let style = Style::default()
-            .fg(Color::Red)
+            .fg(Color::Yellow)
             .add_modifier(style::Modifier::BOLD)
             .add_modifier(style::Modifier::REVERSED);
 
@@ -28,17 +42,20 @@ impl Widget for DirList {
                 .collect::<Vec<_>>(),
         )
         .highlight_style(style)
-        .render(area, buf);
+        .render(area, buf, state);
     }
 }
 
 impl DirList {
-    pub fn set_dir_entries(mut self, dir_entries: Vec<DirectoryEntry>) -> DirList {
+    pub fn dir_entries(mut self, dir_entries: Vec<DirectoryEntry>) -> DirList {
         self.dir_entries = dir_entries;
         self
     }
 
     pub fn get_selected_dir_entry(&self) -> Option<&DirectoryEntry> {
         self.dir_entries.iter().find(|&entry| entry.is_selected())
+    }
+    pub fn get_dir_entries(&self) -> &Vec<DirectoryEntry> {
+        &self.dir_entries
     }
 }

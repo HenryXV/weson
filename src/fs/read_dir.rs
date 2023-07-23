@@ -4,18 +4,17 @@ use std::fs;
 pub fn from(path: &str) -> Vec<DirectoryEntry> {
     let mut dir_entries: Vec<DirectoryEntry> = Vec::new();
 
-    match fs::read_dir(path) {
-        Ok(entries) => {
-            for entry in entries {
-                match entry {
-                    Ok(dir_entry) => {
-                        dir_entries.push(DirectoryEntry::from(dir_entry));
+    if let Ok(entries) = fs::read_dir(path) {
+        for entry in entries {
+            match entry {
+                Ok(dir_entry) => {
+                    if let Some(e) = DirectoryEntry::from(dir_entry) {
+                        dir_entries.push(e);
                     }
-                    Err(err) => eprintln!("Error reading directory entry: {}", err),
                 }
+                Err(_) => continue,
             }
         }
-        Err(err) => eprintln!("Error reading directory: {}", err),
     }
 
     dir_entries

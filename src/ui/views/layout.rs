@@ -1,66 +1,50 @@
-use crate::ui::widgets::dir_list::DirList;
-use crate::ui::widgets::dir_list_expanded::DirListExpanded;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Constraint, Direction, Layout, Rect};
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, BorderType, Borders, Widget};
+use std::rc::Rc;
 
 #[derive(Default)]
-pub struct DirectoriesLayout {
-    dir_list: DirList,
-    dir_list_expanded: DirListExpanded,
-}
+pub struct DirectoriesLayout {}
 
 impl Widget for DirectoriesLayout {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let total_ratio: u32 = 2 + 4 + 4;
-        let chunks = Layout::default()
-            .direction(Direction::Horizontal)
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Ratio(2u32, total_ratio),
-                    Constraint::Ratio(4u32, total_ratio),
-                    Constraint::Ratio(4u32, total_ratio),
-                ]
-                .as_ref(),
-            )
-            .split(area);
+        let chunks = DirectoriesLayout::default_layout(area);
 
-        let inner_chunks_left = Layout::default()
-            .direction(Direction::Horizontal)
-            .margin(1)
-            .horizontal_margin(2)
-            .constraints([Constraint::Percentage(100)].as_ref())
-            .split(chunks[0]);
-
-        let inner_chunks_middle = Layout::default()
-            .direction(Direction::Horizontal)
-            .margin(1)
-            .horizontal_margin(2)
-            .constraints([Constraint::Percentage(100)].as_ref())
-            .split(chunks[1]);
-
-        self.default_block().render(chunks[0], buf);
-        self.default_block().render(chunks[1], buf);
-
-        self.dir_list.render(inner_chunks_left[0], buf);
-        self.dir_list_expanded.render(inner_chunks_middle[0], buf);
+        DirectoriesLayout::default_block().render(chunks[0], buf);
+        DirectoriesLayout::default_block().render(chunks[1], buf);
+        DirectoriesLayout::default_block().render(chunks[2], buf);
     }
 }
 
 impl DirectoriesLayout {
-    pub fn dir_list(mut self, dir_list: DirList) -> DirectoriesLayout {
-        self.dir_list = dir_list;
-        self
+    pub fn default_layout(area: Rect) -> Rc<[Rect]> {
+        let total_ratio: u32 = 1 + 3 + 4;
+
+        Layout::default()
+            .direction(Direction::Horizontal)
+            .margin(1)
+            .constraints(
+                [
+                    Constraint::Ratio(1u32, total_ratio),
+                    Constraint::Ratio(3u32, total_ratio),
+                    Constraint::Ratio(4u32, total_ratio),
+                ]
+                .as_ref(),
+            )
+            .split(area)
     }
 
-    pub fn dir_list_expanded(mut self, dir_list_expanded: DirListExpanded) -> DirectoriesLayout {
-        self.dir_list_expanded = dir_list_expanded;
-        self
+    pub fn get_inner_chunk(area: Rect) -> Rc<[Rect]> {
+        Layout::default()
+            .direction(Direction::Horizontal)
+            .margin(1)
+            .horizontal_margin(2)
+            .constraints([Constraint::Percentage(100)].as_ref())
+            .split(area)
     }
 
-    fn default_block(&self) -> Block {
+    fn default_block<'a>() -> Block<'a> {
         Block::default()
             .borders(Borders::all())
             .border_style(Style::default().fg(Color::White))
