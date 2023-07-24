@@ -8,6 +8,7 @@ enum FocusedView {
 }
 
 pub struct App<'a> {
+    previous_dir_list_state: DirListState<'a>,
     dir_list_state: DirListState<'a>,
     dir_list_expanded_state: DirListState<'a>,
     focused_view: FocusedView,
@@ -16,10 +17,12 @@ pub struct App<'a> {
 
 impl<'a> App<'a> {
     pub fn new(
+        previous_dirs: &'a mut Vec<DirectoryEntry>,
         current_dirs: &'a mut Vec<DirectoryEntry>,
         dirs_expanded: &'a mut Vec<DirectoryEntry>,
     ) -> Self {
         Self {
+            previous_dir_list_state: DirListState::new(previous_dirs),
             dir_list_state: DirListState::new(current_dirs),
             dir_list_expanded_state: DirListState::new(dirs_expanded),
             focused_view: FocusedView::Current,
@@ -32,6 +35,10 @@ impl<'a> App<'a> {
             FocusedView::Current => &mut self.dir_list_state,
             FocusedView::Expanded => &mut self.dir_list_expanded_state,
         }
+    }
+
+    pub fn get_previous_view_state(&mut self) -> &mut DirListState<'a> {
+        &mut self.dir_list_expanded_state
     }
 
     pub fn get_expanded_view_state(&mut self) -> &mut DirListState<'a> {

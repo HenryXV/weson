@@ -2,8 +2,6 @@ use crate::fs::dir_entry::DirectoryEntry;
 use crate::ui::widgets::dir_list::DirList;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-use ratatui::style;
-use ratatui::style::{Color, Style};
 use ratatui::widgets::{ListState, StatefulWidget};
 
 #[derive(Default)]

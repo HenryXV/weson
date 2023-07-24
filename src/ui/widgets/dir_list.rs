@@ -52,9 +52,6 @@ impl DirList {
         self
     }
 
-    pub fn get_selected_dir_entry(&self) -> Option<&DirectoryEntry> {
-        self.dir_entries.iter().find(|&entry| entry.is_selected())
-    }
     pub fn get_dir_entries(&self) -> &Vec<DirectoryEntry> {
         &self.dir_entries
     }

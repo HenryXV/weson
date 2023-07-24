@@ -4,6 +4,7 @@ mod ui;
 mod utils;
 mod context;
 mod events;
+mod audio_player;
 
 use crate::ui::backend::Backend;
 use std::error::Error;

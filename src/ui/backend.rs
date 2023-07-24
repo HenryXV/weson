@@ -31,6 +31,7 @@ impl Backend {
         &mut self,
         app: &mut App,
         layout: DirectoriesLayout,
+        previous_dir_list: DirList,
         dir_list: DirList,
         dir_list_expanded: DirListExpanded,
     ) -> Result<(), Box<dyn Error>> {
@@ -40,15 +41,21 @@ impl Backend {
             frame.render_widget(layout, area);
 
             let chunks = DirectoriesLayout::default_layout(area);
+
+            let inner_chunk_left = DirectoriesLayout::get_inner_chunk(chunks[0]);
             let inner_chunk_middle = DirectoriesLayout::get_inner_chunk(chunks[1]);
             let inner_chunk_right = DirectoriesLayout::get_inner_chunk(chunks[2]);
 
-            let dir_list_state = app.get_focused_view_state();
+            frame.render_stateful_widget(
+                previous_dir_list,
+                inner_chunk_left[0],
+                app.get_previous_view_state().state_mut(),
+            );
 
             frame.render_stateful_widget(
                 dir_list,
                 inner_chunk_middle[0],
-                dir_list_state.state_mut(),
+                app.get_focused_view_state().state_mut(),
             );
 
             frame.render_stateful_widget(

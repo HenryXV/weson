@@ -1,7 +1,8 @@
 use crate::fs::dir_entry::DirectoryEntry;
 use std::fs;
+use std::path::PathBuf;
 
-pub fn from(path: &str) -> Vec<DirectoryEntry> {
+pub fn from(path: &PathBuf) -> Vec<DirectoryEntry> {
     let mut dir_entries: Vec<DirectoryEntry> = Vec::new();
 
     if let Ok(entries) = fs::read_dir(path) {

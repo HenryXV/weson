@@ -79,12 +79,12 @@ impl<'a> DirListState<'a> {
         }
     }
 
-    pub fn unselect(&mut self) {
+    pub fn go_back(&mut self) {
         if let Some(entry) = self.get_selected_entry() {
-            let previous_dir = entry.parent().parent();
+            let previous_dir = entry.path().parent().unwrap().parent();
 
             if let Some(path) = previous_dir {
-                let dirs = fs::read_dir::from(path.to_str().unwrap());
+                let dirs = fs::read_dir::from(&path.to_path_buf());
                 self.set_items(dirs);
             }
         }
