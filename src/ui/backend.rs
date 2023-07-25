@@ -1,7 +1,6 @@
 use crate::context::app::App;
 use crate::ui::views::layout::DirectoriesLayout;
 use crate::ui::widgets::dir_list::DirList;
-use crate::ui::widgets::dir_list_expanded::DirListExpanded;
 use crossterm::execute;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use ratatui::backend::CrosstermBackend;
@@ -31,9 +30,7 @@ impl Backend {
         &mut self,
         app: &mut App,
         layout: DirectoriesLayout,
-        previous_dir_list: DirList,
         dir_list: DirList,
-        dir_list_expanded: DirListExpanded,
     ) -> Result<(), Box<dyn Error>> {
         self.terminal.draw(|frame| {
             let area = frame.size();
@@ -42,26 +39,12 @@ impl Backend {
 
             let chunks = DirectoriesLayout::default_layout(area);
 
-            let inner_chunk_left = DirectoriesLayout::get_inner_chunk(chunks[0]);
-            let inner_chunk_middle = DirectoriesLayout::get_inner_chunk(chunks[1]);
-            let inner_chunk_right = DirectoriesLayout::get_inner_chunk(chunks[2]);
-
-            frame.render_stateful_widget(
-                previous_dir_list,
-                inner_chunk_left[0],
-                app.get_previous_view_state().state_mut(),
-            );
+            let inner_chunk_middle = DirectoriesLayout::get_inner_chunk(chunks[0]);
 
             frame.render_stateful_widget(
                 dir_list,
                 inner_chunk_middle[0],
                 app.get_focused_view_state().state_mut(),
-            );
-
-            frame.render_stateful_widget(
-                dir_list_expanded,
-                inner_chunk_right[0],
-                app.get_expanded_view_state().state_mut(),
             );
         })?;
 

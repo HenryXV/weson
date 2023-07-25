@@ -1,15 +1,18 @@
+mod audio;
+mod context;
+mod events;
 mod fs;
 mod run;
 mod ui;
 mod utils;
-mod context;
-mod events;
-mod audio_player;
 
 use crate::ui::backend::Backend;
+use std::env::{args, args_os};
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let args = args_os();
+
     let mut backend = Backend::new();
     run::run_loop(&mut backend)?;
     backend.quit()?;

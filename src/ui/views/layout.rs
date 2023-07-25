@@ -13,22 +13,20 @@ impl Widget for DirectoriesLayout {
 
         DirectoriesLayout::default_block().render(chunks[0], buf);
         DirectoriesLayout::default_block().render(chunks[1], buf);
-        DirectoriesLayout::default_block().render(chunks[2], buf);
     }
 }
 
 impl DirectoriesLayout {
     pub fn default_layout(area: Rect) -> Rc<[Rect]> {
-        let total_ratio: u32 = 1 + 3 + 4;
+        let total_ratio: u32 = 5 + 5;
 
         Layout::default()
             .direction(Direction::Horizontal)
             .margin(1)
             .constraints(
                 [
-                    Constraint::Ratio(1u32, total_ratio),
-                    Constraint::Ratio(3u32, total_ratio),
-                    Constraint::Ratio(4u32, total_ratio),
+                    Constraint::Ratio(5u32, total_ratio),
+                    Constraint::Ratio(5u32, total_ratio),
                 ]
                 .as_ref(),
             )

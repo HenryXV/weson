@@ -1,48 +1,40 @@
 use crate::context::dir_list_state::DirListState;
 use crate::fs::dir_entry::DirectoryEntry;
-
-#[derive(Hash, PartialEq, Eq)]
-enum FocusedView {
-    Current,
-    Expanded,
-}
+use std::collections::HashMap;
+use std::path::PathBuf;
 
 pub struct App<'a> {
-    previous_dir_list_state: DirListState<'a>,
+    visited_dirs: HashMap<PathBuf, DirListState<'a>>,
     dir_list_state: DirListState<'a>,
-    dir_list_expanded_state: DirListState<'a>,
-    focused_view: FocusedView,
+    current_dir: &'a PathBuf,
     quit: bool,
 }
 
 impl<'a> App<'a> {
-    pub fn new(
-        previous_dirs: &'a mut Vec<DirectoryEntry>,
-        current_dirs: &'a mut Vec<DirectoryEntry>,
-        dirs_expanded: &'a mut Vec<DirectoryEntry>,
-    ) -> Self {
+    pub fn new(current_dirs: &'a mut Vec<DirectoryEntry>, parent_path: &'a PathBuf) -> Self {
+        let visited_dirs: HashMap<PathBuf, DirListState<'a>> = HashMap::new();
+
+        // visited_dirs.insert(parent_path.clone(), DirListState::new(current_dirs));
+
         Self {
-            previous_dir_list_state: DirListState::new(previous_dirs),
+            visited_dirs,
             dir_list_state: DirListState::new(current_dirs),
-            dir_list_expanded_state: DirListState::new(dirs_expanded),
-            focused_view: FocusedView::Current,
+            current_dir: parent_path,
             quit: false,
         }
     }
 
     pub fn get_focused_view_state(&mut self) -> &mut DirListState<'a> {
-        match self.focused_view {
-            FocusedView::Current => &mut self.dir_list_state,
-            FocusedView::Expanded => &mut self.dir_list_expanded_state,
-        }
+        &mut self.dir_list_state
     }
 
-    pub fn get_previous_view_state(&mut self) -> &mut DirListState<'a> {
-        &mut self.dir_list_expanded_state
+    pub fn add_visited_dir(&mut self, path: &PathBuf, dirs: &'a mut Vec<DirectoryEntry>) {
+        self.visited_dirs
+            .insert(path.clone(), DirListState::new(dirs));
     }
 
-    pub fn get_expanded_view_state(&mut self) -> &mut DirListState<'a> {
-        &mut self.dir_list_expanded_state
+    pub fn set_current_dir(&mut self, path: &'a PathBuf) {
+        self.current_dir = path;
     }
 
     pub fn quit(&mut self) {
