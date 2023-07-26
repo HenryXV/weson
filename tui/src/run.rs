@@ -1,16 +1,16 @@
-use crate::audio::player::Player;
 use crate::context::app::App;
 use crate::events::process_event::EventProcessor;
 use crate::fs;
 use crate::ui::backend::Backend;
 use crate::ui::views::layout::DirectoriesLayout;
 use crate::ui::widgets::dir_list::DirList;
+use audio::player::Player;
 use crossterm::event;
 use crossterm::event::{Event, KeyEventKind};
 use std::error::Error;
 use std::time::Duration;
 
-pub fn run_loop(backend: &mut Backend) -> Result<(), Box<dyn Error>> {
+pub async fn run_loop<'a>(backend: &mut Backend<'a>) -> Result<(), Box<dyn Error>> {
     let home_dir_parent = dirs_next::home_dir()
         .unwrap()
         .parent()
@@ -20,7 +20,7 @@ pub fn run_loop(backend: &mut Backend) -> Result<(), Box<dyn Error>> {
     let mut dir_entries = fs::read_dir::from(&home_dir_parent);
 
     let mut app = App::new(&mut dir_entries, &home_dir_parent);
-    let player = Player::new();
+    let mut player = Player::default();
 
     while !app.get_quit() {
         let mut dir_list = DirList::default();
@@ -40,7 +40,13 @@ pub fn run_loop(backend: &mut Backend) -> Result<(), Box<dyn Error>> {
         if event::poll(Duration::from_millis(250))? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
-                    EventProcessor::process_key_press(&mut app, key.code, &player);
+                    EventProcessor::process_key_press(
+                        &mut app,
+                        key.code,
+                        &mut player,
+                        backend.pool,
+                    )
+                    .await;
                 }
             }
         }

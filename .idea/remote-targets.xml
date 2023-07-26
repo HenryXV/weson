@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="WSL - Ubuntu-22.04" type="wsl" uuid="146cd913-dda6-4644-949a-316e52d66185">
+        <config>
+          <option name="distributionMsId" value="Ubuntu-22.04" />
+          <option name="projectRootOnTarget" value="/mnt/c/Users/henri/AppData/Local/JetBrains/Toolbox/apps/IDEA-U/ch-0/231.9011.34/jbr/bin&#10;/weson" />
+        </config>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config>
+            <option name="cargoPath" value="/home/henry/.cargo/bin/cargo" />
+            <option name="cargoVersion" value="1.71.0 (cfd3bbd8f 2023-06-08)" />
+            <option name="rustcPath" value="/home/henry/.cargo/bin/rustc" />
+            <option name="rustcVersion" value="1.71.0 (8ede3aae2 2023-07-12)" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>

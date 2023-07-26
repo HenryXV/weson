@@ -5,19 +5,21 @@ use crossterm::execute;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
+use sqlx::SqlitePool;
 use std::error::Error;
 use std::io;
 use std::io::Stdout;
 
-pub struct Backend {
+pub struct Backend<'a> {
     pub terminal: Terminal<CrosstermBackend<Stdout>>,
+    pub pool: &'a SqlitePool,
 }
 
-impl Backend {
-    pub fn new() -> Self {
+impl<'a> Backend<'a> {
+    pub fn new(pool: &'a SqlitePool) -> Self {
         let terminal = Backend::setup_terminal().unwrap();
 
-        Self { terminal }
+        Self { terminal, pool }
     }
 
     pub fn quit(&mut self) -> Result<(), Box<dyn Error>> {

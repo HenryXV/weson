@@ -6,9 +6,17 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/vie/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/voe/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/audio/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/database/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tui" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tui/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src/vie/target" />
       <excludeFolder url="file://$MODULE_DIR$/src/voe/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/audio/target" />
+      <excludeFolder url="file://$MODULE_DIR$/tui/target" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/logs" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
