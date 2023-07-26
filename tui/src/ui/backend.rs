@@ -1,14 +1,16 @@
 use crate::context::app::App;
 use crate::ui::views::layout::DirectoriesLayout;
+use crate::ui::widgets::audio_list::AudioList;
 use crate::ui::widgets::dir_list::DirList;
 use crossterm::execute;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use log::log;
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use sqlx::SqlitePool;
 use std::error::Error;
-use std::io;
 use std::io::Stdout;
+use std::{io, process};
 
 pub struct Backend<'a> {
     pub terminal: Terminal<CrosstermBackend<Stdout>>,
@@ -17,7 +19,16 @@ pub struct Backend<'a> {
 
 impl<'a> Backend<'a> {
     pub fn new(pool: &'a SqlitePool) -> Self {
-        let terminal = Backend::setup_terminal().unwrap();
+        let terminal = match Backend::setup_terminal() {
+            Ok(terminal) => {
+                log::info!("Backend initiated");
+                terminal
+            }
+            Err(e) => {
+                log::error!("Failed to initialize backend. {e}");
+                process::exit(1);
+            }
+        };
 
         Self { terminal, pool }
     }
@@ -33,6 +44,7 @@ impl<'a> Backend<'a> {
         app: &mut App,
         layout: DirectoriesLayout,
         dir_list: DirList,
+        audio_list: AudioList,
     ) -> Result<(), Box<dyn Error>> {
         self.terminal.draw(|frame| {
             let area = frame.size();
@@ -41,13 +53,16 @@ impl<'a> Backend<'a> {
 
             let chunks = DirectoriesLayout::default_layout(area);
 
-            let inner_chunk_middle = DirectoriesLayout::get_inner_chunk(chunks[0]);
+            let inner_chunk_left = DirectoriesLayout::get_inner_chunk(chunks[0]);
+            let inner_chunk_right = DirectoriesLayout::get_inner_chunk(chunks[1]);
 
             frame.render_stateful_widget(
                 dir_list,
-                inner_chunk_middle[0],
+                inner_chunk_left[0],
                 app.get_focused_view_state().state_mut(),
             );
+
+            frame.render_widget(audio_list, inner_chunk_right[0]);
         })?;
 
         Ok(())

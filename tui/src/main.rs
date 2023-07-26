@@ -38,7 +38,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let mut backend = Backend::new(&pool);
-    run::run_loop(&mut backend).await?;
+    match run::run_loop(&mut backend).await {
+        Ok(_) => log::info!("App finished executing successfully"),
+        Err(e) => log::error!("Error during program execution: {e}"),
+    }
+
     backend.quit()?;
     Ok(())
 }

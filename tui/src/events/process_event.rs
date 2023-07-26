@@ -1,5 +1,6 @@
 use crate::context::app::App;
 use audio::player::Player;
+use audio::queue::Queue;
 use crossterm::event::KeyCode;
 use database::playlist::Playlist;
 use sqlx::SqlitePool;
@@ -11,6 +12,7 @@ impl EventProcessor {
         app: &mut App<'a>,
         key: KeyCode,
         player: &mut Player,
+        queue: &mut Queue,
         pool: &SqlitePool,
     ) {
         match key {
@@ -19,7 +21,7 @@ impl EventProcessor {
             KeyCode::Down => app.get_focused_view_state().next(),
             KeyCode::Up => app.get_focused_view_state().previous(),
             KeyCode::Right | KeyCode::Enter => app.get_focused_view_state().enter_selected_dir(),
-            KeyCode::Char('a') => player.add_to_queue(
+            KeyCode::Char('a') => queue.add_audio(
                 app.get_focused_view_state()
                     .get_selected_entry()
                     .unwrap()
