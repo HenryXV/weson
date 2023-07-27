@@ -36,7 +36,7 @@ impl StatefulWidget for DirList {
             self.dir_entries
                 .iter()
                 .map(|entry| {
-                    let path = format::get_formatted_path(entry.name(), area.width as usize - 4);
+                    let path = format::get_formatted_name(entry.name(), area.width as usize - 4);
                     ListItem::new(path)
                 })
                 .collect::<Vec<_>>(),

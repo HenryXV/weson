@@ -4,7 +4,6 @@ use crate::ui::widgets::audio_list::AudioList;
 use crate::ui::widgets::dir_list::DirList;
 use crossterm::execute;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
-use log::log;
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use sqlx::SqlitePool;
@@ -59,7 +58,7 @@ impl<'a> Backend<'a> {
             frame.render_stateful_widget(
                 dir_list,
                 inner_chunk_left[0],
-                app.get_focused_view_state().state_mut(),
+                app.get_focused_view_state_mut().state_mut(),
             );
 
             frame.render_widget(audio_list, inner_chunk_right[0]);

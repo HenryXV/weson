@@ -18,15 +18,15 @@ impl Widget for DirectoriesLayout {
 
 impl DirectoriesLayout {
     pub fn default_layout(area: Rect) -> Rc<[Rect]> {
-        let total_ratio: u32 = 5 + 5;
+        let total_ratio: u32 = 3 + 7;
 
         Layout::default()
             .direction(Direction::Horizontal)
             .margin(1)
             .constraints(
                 [
-                    Constraint::Ratio(5u32, total_ratio),
-                    Constraint::Ratio(5u32, total_ratio),
+                    Constraint::Ratio(3u32, total_ratio),
+                    Constraint::Ratio(7u32, total_ratio),
                 ]
                 .as_ref(),
             )

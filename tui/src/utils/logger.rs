@@ -8,7 +8,7 @@ pub fn init_logger() -> anyhow::Result<LoggerHandle> {
         .rotate(
             Criterion::Age(Age::Hour),
             Naming::Numbers,
-            Cleanup::KeepLogFiles(1),
+            Cleanup::KeepLogFiles(2),
         )
         .write_mode(WriteMode::Async)
         .start()?;

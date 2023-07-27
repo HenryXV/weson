@@ -15,15 +15,11 @@ use std::time::Duration;
 use tokio::sync::mpsc::channel;
 
 pub async fn run_loop<'a>(backend: &mut Backend<'a>) -> Result<(), Box<dyn Error>> {
-    let home_dir_parent = dirs_next::home_dir()
-        .unwrap()
-        .parent()
-        .unwrap()
-        .to_path_buf();
+    let audio_dir = dirs_next::audio_dir().unwrap().to_path_buf();
 
-    let mut dir_entries = fs::read_dir::from(&home_dir_parent);
+    let dir_entries = fs::read_dir::from(&audio_dir);
 
-    let mut app = App::new(&mut dir_entries, &home_dir_parent);
+    let mut app = App::new(dir_entries, &audio_dir);
 
     let mut player = Player::default();
 
@@ -34,21 +30,17 @@ pub async fn run_loop<'a>(backend: &mut Backend<'a>) -> Result<(), Box<dyn Error
     while !app.get_quit() {
         if player.queue_len() == 0 {
             if let Ok(source) = rx.try_recv() {
+                let name = queue.audio_list().lock().unwrap().pop_front().unwrap();
+                queue.set_current_audio(name);
                 player.play(source)
             }
         }
 
-        let mut dir_list = DirList::default();
+        let mut dir_list = DirList::default().dir_entries(app.current_dir_state().items().clone());
 
-        let selected_dir_entry = app.get_focused_view_state().get_selected_entry();
-
-        if let Some(entry) = selected_dir_entry {
-            dir_list = dir_list.dir_entries(fs::read_dir::from(
-                &entry.path().parent().unwrap().to_path_buf(),
-            ));
-        }
-
-        let audio_list = AudioList::default();
+        let audio_list = AudioList::default()
+            .audios(Vec::from(queue.audio_list().lock().unwrap().clone()))
+            .current_audio(queue.current_audio().clone());
 
         let layout = DirectoriesLayout::default();
 

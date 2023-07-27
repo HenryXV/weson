@@ -8,8 +8,8 @@ use sqlx::SqlitePool;
 pub struct EventProcessor {}
 
 impl EventProcessor {
-    pub async fn process_key_press<'a>(
-        app: &mut App<'a>,
+    pub async fn process_key_press(
+        app: &mut App,
         key: KeyCode,
         player: &mut Player,
         queue: &mut Queue,
@@ -17,16 +17,13 @@ impl EventProcessor {
     ) {
         match key {
             KeyCode::Char('q') => app.quit(),
-            KeyCode::Left => app.get_focused_view_state().go_back(),
-            KeyCode::Down => app.get_focused_view_state().next(),
-            KeyCode::Up => app.get_focused_view_state().previous(),
-            KeyCode::Right | KeyCode::Enter => app.get_focused_view_state().enter_selected_dir(),
-            KeyCode::Char('a') => queue.add_audio(
-                app.get_focused_view_state()
-                    .get_selected_entry()
-                    .unwrap()
-                    .path(),
-            ),
+            KeyCode::Left => app.go_back(),
+            KeyCode::Down => app.get_focused_view_state_mut().next(),
+            KeyCode::Up => app.get_focused_view_state_mut().previous(),
+            KeyCode::Right | KeyCode::Enter => app.enter_selected_dir(),
+            KeyCode::Char('a') => {
+                queue.add_audio(app.current_dir_state().get_selected_entry().unwrap().path())
+            }
             KeyCode::Char('p') => player.pause(),
             KeyCode::Char('r') => player.resume(),
             KeyCode::Char('s') => Playlist::new("test".to_string(), "musica".to_string())
