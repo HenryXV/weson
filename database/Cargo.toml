@@ -1,0 +1,13 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.71"
+sqlx = { version = "0.7", features = [ "runtime-tokio", "sqlite" ] }
+tokio = { version = "1.29.1", features = ["full"] }
+log = { version = "0.4.14", features = ["std"] }
+dotenv = "0.15.0"

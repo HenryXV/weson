@@ -36,7 +36,7 @@ pub async fn run_loop<'a>(backend: &mut Backend<'a>) -> Result<(), Box<dyn Error
             }
         }
 
-        let mut dir_list = DirList::default().dir_entries(app.current_dir_state().items().clone());
+        let dir_list = DirList::default().dir_entries(app.current_dir_state().items().clone());
 
         let audio_list = AudioList::default()
             .audios(Vec::from(queue.audio_list().lock().unwrap().clone()))
